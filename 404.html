@@ -16,12 +16,21 @@
     var lowerPathname = l.pathname.toLowerCase();
     
     // Check if the lowercase path matches any key in our list
-    var targetDomain = redirects[lowerPathname] || defaultDomain;
+    var targetDomain = redirects[lowerPathname];
+    var isSpecialRedirect = !!targetDomain;
+    
+    // Fallback to defaultDomain if no specific redirect matches
+    targetDomain = targetDomain || defaultDomain;
+
+    // If it's a special redirect (like /mccownhacks), we typically want to go to the root (0 segments kept)
+    // For default domain, we keep pathSegmentsToKeep
+    var effectiveSegmentsToKeep = isSpecialRedirect ? 0 : pathSegmentsToKeep;
 
     var pathSegments = lowerPathname.split('/').filter(Boolean);
 
     // Build the redirect URL keeping any search queries or hashes
-    var redirectUrl = targetDomain + '/' + pathSegments.slice(pathSegmentsToKeep).join('/') + l.search + l.hash;
+    var trailingPath = pathSegments.slice(effectiveSegmentsToKeep).join('/');
+    var redirectUrl = targetDomain + (trailingPath ? '/' + trailingPath : '') + l.search + l.hash;
     
     // Perform the redirect
     window.location.replace(redirectUrl);
