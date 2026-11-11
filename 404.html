@@ -3,14 +3,24 @@
 <head>
   <meta charset="utf-8">
   <script>
-    // Redirects GitHub Pages 404s to ccsuclubs.github.io while preserving path and query/hash
-    var targetDomain = "https://gaynormccown.pages.dev";
-    var pathSegmentsToKeep = 0; // Adjust if your site is hosted in a subdirectory (e.g., /repo-name/ would be 1)
+    // 1. ADD YOUR REDIRECTS HERE (Keys must be lowercase, with leading slashes)
+    var redirects = {
+      "/hackathon": "https://mccownhacks.pages.dev",
+      "/mccownhacks": "https://mccownhacks.pages.dev"
+    };
+
+    var defaultDomain = "https://gaynormccown.pages.dev";
+    var pathSegmentsToKeep = 0;
 
     var l = window.location;
-    var pathSegments = l.pathname.split('/').slice(1);
+    var lowerPathname = l.pathname.toLowerCase();
     
-    // Build the redirect URL
+    // Check if the lowercase path matches any key in our list
+    var targetDomain = redirects[lowerPathname] || defaultDomain;
+
+    var pathSegments = lowerPathname.split('/').filter(Boolean);
+
+    // Build the redirect URL keeping any search queries or hashes
     var redirectUrl = targetDomain + '/' + pathSegments.slice(pathSegmentsToKeep).join('/') + l.search + l.hash;
     
     // Perform the redirect
