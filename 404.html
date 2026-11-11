@@ -3,34 +3,15 @@
 <head>
   <meta charset="utf-8">
   <script>
-    // 1. ADD YOUR REDIRECTS HERE (Keys must be lowercase, with leading slashes)
-    var redirects = {
-      "/hackathon": "https://mccownhacks.pages.dev",
-      "/mccownhacks": "https://mccownhacks.pages.dev"
-    };
-
-    var defaultDomain = "https://gaynormccown.pages.dev";
-    var pathSegmentsToKeep = 0;
+    // Redirects GitHub Pages 404s to ccsuclubs.github.io while preserving path and query/hash
+    var targetDomain = "https://gaynormccown.pages.dev";
+    var pathSegmentsToKeep = 0; // Adjust if your site is hosted in a subdirectory (e.g., /repo-name/ would be 1)
 
     var l = window.location;
-    var lowerPathname = l.pathname.toLowerCase();
+    var pathSegments = l.pathname.split('/').slice(1);
     
-    // Check if the lowercase path matches any key in our list
-    var targetDomain = redirects[lowerPathname];
-    var isSpecialRedirect = !!targetDomain;
-    
-    // Fallback to defaultDomain if no specific redirect matches
-    targetDomain = targetDomain || defaultDomain;
-
-    // If it's a special redirect (like /mccownhacks), we typically want to go to the root (0 segments kept)
-    // For default domain, we keep pathSegmentsToKeep
-    var effectiveSegmentsToKeep = isSpecialRedirect ? 0 : pathSegmentsToKeep;
-
-    var pathSegments = lowerPathname.split('/').filter(Boolean);
-
-    // Build the redirect URL keeping any search queries or hashes
-    var trailingPath = pathSegments.slice(effectiveSegmentsToKeep).join('/');
-    var redirectUrl = targetDomain + (trailingPath ? '/' + trailingPath : '') + l.search + l.hash;
+    // Build the redirect URL
+    var redirectUrl = targetDomain + '/' + pathSegments.slice(pathSegmentsToKeep).join('/') + l.search + l.hash;
     
     // Perform the redirect
     window.location.replace(redirectUrl);
